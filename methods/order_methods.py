@@ -1,3 +1,4 @@
+import json
 import secrets
 
 import requests
@@ -6,7 +7,7 @@ from config import BASE_URL
 class OrderMethods:
 
     # создание заказа
-    def create_order(self, payload):
+    def create_order(self, payload: json):
 
         # Создание заказа
         r_order = requests.post(f'{BASE_URL}orders', data=payload)

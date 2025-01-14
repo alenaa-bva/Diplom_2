@@ -4,7 +4,7 @@ from helpers import register_new_courier_and_return_login_password, generate_new
 
 
 @pytest.fixture
-def courier():
+def user():
     # Подготовка данных
     print("Создание пользователя.")
     user_data = generate_new_user_data
@@ -19,6 +19,7 @@ def courier():
         ""
     }
 
+    # чтобы удалить пользователя, сначала нужно авторизоваться и получить токен
     response = CourierMethods().login_courier(courier)
     if "id" in response.json():
         print("\nУдаление курьера после теста.")
