@@ -1,6 +1,6 @@
 import pytest
 
-from config import DOMEN, COURIER_REGISTER_USER_EXIST_403, COURIER_REGISTER_MISSING_DATA_403
+from config import DOMEN, REGISTER_USER_EXIST_403, REGISTER_USER_MISSING_DATA_403
 from helpers import generate_new_user_data
 from methods.user_methods import UserMethods
 
@@ -71,7 +71,7 @@ class TestCreateUser:
         # регистрируем пользователя еще раз
         r_register = UserMethods().register_user(payload)
 
-        assert r_register.status_code == 403 and r_register.json()["message"] == COURIER_REGISTER_USER_EXIST_403
+        assert r_register.status_code == 403 and r_register.json()["message"] == REGISTER_USER_EXIST_403
         print(r_register.json()["message"])
 
         # подчищаем данные после теста - удаляем пользователя
@@ -94,7 +94,7 @@ class TestCreateUser:
         # регистрируем пользователя без обязательных полей
         r_register = UserMethods().register_user(payload)
 
-        assert r_register.status_code == 403 and r_register.json()["message"] == COURIER_REGISTER_MISSING_DATA_403
+        assert r_register.status_code == 403 and r_register.json()["message"] == REGISTER_USER_MISSING_DATA_403
         print(r_register.json()["message"])
 
 

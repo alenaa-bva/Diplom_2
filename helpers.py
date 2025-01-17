@@ -55,33 +55,37 @@ def generate_new_user_data():
         random_string = ''.join(random.choice(letters) for i in range(length))
         return random_string
 
-    # создаём список, чтобы метод мог его вернуть
-    user_data = []
+    # создаём словарь, чтобы метод мог его вернуть
+    user_data = {
+            "email": "",
+            "password": "",
+            "name": ""
+        }
 
     # генерируем данные пользователя
     email = generate_random_string(10)
     password = generate_random_string(10)
     name = generate_random_string(10)
 
-    user_data.append(email)
-    user_data.append(password)
-    user_data.append(name)
+    user_data["email"] = email
+    user_data["password"] = password
+    user_data["name"] = name
 
-    # возвращаем список
+    # возвращаем словарь
     return user_data
 
-def delete_user(self):
-    user_data = register_new_user()
-
-    headers = {
-        "Authorization": user_data.get("accessToken"),
-        "Content-Type": "application/json"
-    }
-
-    payload = {
-            "email": user_data.get("email"),
-            "password": user_data.get("password")
-    }
-
-    r_delete = requests.post(f'{BASE_URL}auth/user', json=payload, headers=headers)
-    return r_delete
+# def delete_user(self):
+#     user_data = register_new_user()
+#
+#     headers = {
+#         "Authorization": user_data.get("accessToken"),
+#         "Content-Type": "application/json"
+#     }
+#
+#     payload = {
+#             "email": user_data.get("email"),
+#             "password": user_data.get("password")
+#     }
+#
+#     r_delete = requests.post(f'{BASE_URL}auth/user', json=payload, headers=headers)
+#     return r_delete
