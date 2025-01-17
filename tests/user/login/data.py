@@ -1,10 +1,3 @@
-import random
-
-from config import DOMEN
-from helpers import generate_new_user_data
-from methods.user_methods import UserMethods
-
-
 class TestParametersCreator:
 
     def get_test_params(self, user_data) -> dict:

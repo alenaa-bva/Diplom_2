@@ -1,4 +1,5 @@
 import json
+import random
 import secrets
 
 import requests
@@ -7,21 +8,25 @@ from config import BASE_URL
 class OrderMethods:
 
     # создание заказа
-    def create_order(self, payload: json):
+    def create_order(self, payload: json, headers = None):
 
         # Создание заказа
-        r_order = requests.post(f'{BASE_URL}orders', data=payload)
+        r_order = requests.post(f'{BASE_URL}orders', data=payload, headers = headers)
         return r_order
 
-    # получение id ингредиентов
+
+    # получение id случайных ингредиентов в заданном количестве
     def get_ingredients(self):
         r_ingredients = requests.get(f'{BASE_URL}ingredients')
         ingredients = r_ingredients.json()
 
         # Извлекаем все _id ингредиентов
         ingredients_ids = [item["_id"] for item in ingredients["data"]]
+        count = random.randint(1, len(ingredients_ids))
+        random_ingredients_ids = random.sample(ingredients_ids, count)
 
-        return ingredients_ids
+        return random_ingredients_ids
+
 
     # создание несуществующего id ингредиента
     def create_invalid_ingredient_id(self):
@@ -31,3 +36,19 @@ class OrderMethods:
             invalid_id = secrets.token_hex(24)
             if invalid_id not in ingredients_ids:
                 return invalid_id
+
+
+    # получение всех заказов
+    def get_all_orders(self):
+
+        r_orders = requests.get(f'{BASE_URL}orders/all')
+        return r_orders
+
+
+    # получение всех заказов пользователя
+    def get_user_orders(self, headers = None):
+
+        r_orders = requests.get(f'{BASE_URL}orders', headers=headers)
+
+        return r_orders
+

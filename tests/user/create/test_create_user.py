@@ -1,101 +1,91 @@
 import pytest
 
-from config import DOMEN, REGISTER_USER_EXIST_403, REGISTER_USER_MISSING_DATA_403
-from helpers import generate_new_user_data
+from config import REGISTER_USER_EXIST_403, REGISTER_USER_MISSING_DATA_403
 from methods.user_methods import UserMethods
+from tests.user.create.fx_create_user import fx_create_user
+from tests.order.create import da
+
 
 
 class TestCreateUser:
 
-    @pytest.mark.parametrize('domen', [
-        DOMEN.get("yandex.ru"),
-        DOMEN.get("google.com")
-    ])
-    def test_register_user(self, domen):
+    @pytest.mark.parametrize("valid_data", ["valid_user"])
+    def test_register_user_valid_data(self, fx_create_user, valid_data, request):
 
-        # генерируем данные пользователя
-        user_data = generate_new_user_data()
-
-        payload = {
-            "email": f"{user_data[0]}{domen}",
-            "password": user_data[1],
-            "name": user_data[2]
-        }
-
-        payload = {
-            "email": f"{user_data[0]}{domen}",
-            "password": user_data[1],
-            "name": user_data[2]
-        }
+        user_data = fx_create_user[valid_data]
 
         # регистрируем пользователя
-        r_register = UserMethods().register_user(payload)
+        r_register = UserMethods().register_user(user_data)
+        print(f"* Пользователь - {user_data}")
 
-        assert r_register.status_code == 200 and r_register.json()["success"] == True, f"Ошибка регистрации пользователя"
+        # Установка атрибута access_token в request.node
+        request.node.access_token = r_register.json()["accessToken"]
 
-        # получаем токен
-        access_token = r_register.json()["accessToken"]
-
-        # подчищаем данные после теста - удаляем пользователя
-        UserMethods().delete_user(payload, access_token)
-
-        # регистрируем пользователя
-        r_register = UserMethods().register_user(payload)
-
-        assert r_register.status_code == 200 and r_register.json()["success"] == True, f"Ошибка регистрации пользователя"
-
-        # получаем токен
-        access_token = r_register.json()["accessToken"]
-
-        # подчищаем данные после теста - удаляем пользователя
-        UserMethods().delete_user(payload, access_token)
+        print("* Проверка результатов.")
+        assert r_register.status_code == 200 and r_register.json()[
+            "accessToken"] is not None, f"Ошибка регистрации пользователя"
 
 
-    def test_register_existed_user(self):
 
-        # генерируем данные пользователя
-        user_data = generate_new_user_data()
+    @pytest.mark.parametrize("valid_data", ["valid_user"])
+    def test_register_existed_user(self, fx_create_user, valid_data, request):
 
-        payload = {
-            "email": f"{user_data[0]}@yandex.ru",
-            "password": user_data[1],
-            "name": user_data[2]
-        }
+        user_data = fx_create_user[valid_data]
 
         # регистрируем пользователя
-        r_register = UserMethods().register_user(payload)
+        r_register1 = UserMethods().register_user(user_data)
+        print(f"* Пользователь - {user_data}")
 
-        # получаем токен
-        access_token = r_register.json()["accessToken"]
+        # Установка атрибута access_token в request.node
+        request.node.access_token = r_register1.json()["accessToken"]
 
         # регистрируем пользователя еще раз
-        r_register = UserMethods().register_user(payload)
+        r_register2 = UserMethods().register_user(user_data)
 
-        assert r_register.status_code == 403 and r_register.json()["message"] == REGISTER_USER_EXIST_403
-        print(r_register.json()["message"])
-
-        # подчищаем данные после теста - удаляем пользователя
-        UserMethods().delete_user(payload, access_token)
+        print("* Проверка результатов.")
+        assert r_register2.status_code == 403 and r_register2.json()["message"] == REGISTER_USER_EXIST_403
+        print(f"* Response body message: {r_register2.json()['message']}")
 
 
-    @pytest.mark.parametrize('email, password, name', [
-        ('', 'password', 'user'),
-        ('some_email@yandex.ru', '', 'user'),
-        ('some_email@yandex.ru', 'password', '')
-    ])
-    def test_register_user_without_required_fields(self, email, password, name):
+    @pytest.mark.parametrize(
+        "missing_data",
+        [
+            "missing_password",
+            "missing_email",
+            "missing_name"
+        ]
+    )
+    def test_register_user_missing_data(self, fx_create_user, missing_data):
 
-        payload = {
-            "email": email,
-            "password": password,
-            "name": name
-        }
+        user_data = fx_create_user[missing_data]
+        print(f"* Данные для регистрации - {user_data}")
 
-        # регистрируем пользователя без обязательных полей
-        r_register = UserMethods().register_user(payload)
+        # регистрируем пользователя
+        r_register = UserMethods().register_user(user_data)
 
+        print("* Проверка результатов.")
         assert r_register.status_code == 403 and r_register.json()["message"] == REGISTER_USER_MISSING_DATA_403
-        print(r_register.json()["message"])
+        print(f"* Response body message: {r_register.json()['message']}")
+
+
+    @pytest.mark.parametrize(
+        "invalid_data",
+        [
+            "invalid_email"
+        ]
+    )
+    def test_register_user_with_incorrect_email(self, fx_create_user, invalid_data):
+
+        user_data = fx_create_user[invalid_data]
+        print(f"* Данные для регистрации - {user_data}")
+
+        # регистрируем пользователя
+        r_register = UserMethods().register_user(user_data)
+
+        print("* Проверка результатов.")
+        assert r_register.status_code == 500
+
+
 
 
 

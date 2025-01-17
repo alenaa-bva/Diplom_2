@@ -32,8 +32,7 @@ class UserMethods:
     def delete_user(self, user_data: dict, access_token: str):
 
         headers = {
-            "Authorization": access_token,
-            "Content-Type": "application/json"
+            "Authorization": access_token
         }
 
         payload = {

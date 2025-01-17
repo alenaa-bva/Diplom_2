@@ -1,5 +1,5 @@
 import pytest
-from config import LOGIN_USER_INCORRECT_DATA_401
+from config import LOGIN_USER_MISSING_DATA_401
 from methods.user_methods import UserMethods
 from tests.user.login.fx_login_user import fx_login_user
 
@@ -39,7 +39,7 @@ class TestLoginUser:
         r_login = UserMethods().login_user(user_data)
 
         print("* Проверка результатов.")
-        assert r_login.status_code == 401 and r_login.json()["message"] == LOGIN_USER_INCORRECT_DATA_401
+        assert r_login.status_code == 401 and r_login.json()["message"] == LOGIN_USER_MISSING_DATA_401
         print(f"* Response body message: {r_login.json()['message']}")
 
 
