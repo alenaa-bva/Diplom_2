@@ -55,13 +55,24 @@ class TestGetOrder:
 
         print("\n* Начало теста.")
 
+        print("* Попытка получить заказы пользователя, не указывая токен.")
+        r_order = OrderMethods().get_user_orders()
+
+        print("* Проверка результатов.")
+        assert r_order.status_code == 401, f"Ошибка получения списка заказов"
+        print("* Конец теста.\n")
+
+
+    def test_get_orders_expired_token(self):
+
+        print("\n* Начало теста.")
+
         # добавляем рандомный access_token в хедеры
         headers = {
             "Authorization" : EXPIRED_TOKEN
-
         }
 
-        print("* Получаем заказы пользователя.")
+        print("* Получаем заказы пользователя c просроченным токеном.")
         r_order = OrderMethods().get_user_orders(headers)
 
         print("* Проверка результатов.")

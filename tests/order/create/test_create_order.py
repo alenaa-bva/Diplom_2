@@ -1,15 +1,11 @@
-import pytest
-
-from config import ORDER_CREATE_400
+from config import ORDER_CREATE_400, EXPIRED_TOKEN, GET_ORDERS_JWT_EXPIRED_403
 from methods.order_methods import OrderMethods
-from methods.user_methods import UserMethods
 from tests.order.create.fx_create_order import fx_create_order
 
 
 class TestCreateOrder:
 
-    @pytest.mark.parametrize("valid_data", ["valid_user"])
-    def test_create_order_with_authorization(self, fx_create_order, valid_data, request):
+    def test_create_order_with_authorization(self, fx_create_order):
 
         print("\n* Начало теста.")
 
@@ -17,18 +13,12 @@ class TestCreateOrder:
                        []
                    }
 
-        user_data = fx_create_order[valid_data]
+        user_data = fx_create_order
         print(f"* Пользователь - {user_data}")
-
-        # логиним пользователя
-        r_login = UserMethods().login_user(user_data)
-
-        # Установка атрибута access_token в request.node
-        request.node.access_token = r_login.json()["accessToken"]
 
         # добавляем accessToken в хедеры
         headers = {
-            "Authorization": r_login.json()["accessToken"]
+            "Authorization": user_data["access_token"]
         }
 
         # получаем список из id ингредиентов
@@ -42,7 +32,7 @@ class TestCreateOrder:
         assert r_order.status_code == 200 and "_id" in r_order.json()["order"], f"Ошибка создания заказа"
 
 
-    def test_create_order_without_authorization(self):
+    def test_create_order_unauthorized_user(self):
 
         print("\n* Начало теста.")
 
@@ -59,6 +49,33 @@ class TestCreateOrder:
 
         print("* Проверка результатов.")
         assert r_order.status_code == 200 and "_id" not in r_order.json()["order"], f"Ошибка создания заказа"
+
+        print("* Конец теста.\n")
+
+
+    def test_create_order_orders_expired_token(self):
+
+        print("\n* Начало теста.")
+
+        # добавляем рандомный access_token в хедеры
+        headers = {
+            "Authorization": EXPIRED_TOKEN
+        }
+
+        payload = {'ingredients':
+                       []
+                   }
+
+        # получаем список из id ингредиентов
+        ingredients_ids = OrderMethods().get_ingredients()
+        payload['ingredients'] = ingredients_ids
+
+        print("* Создаем заказ пользователю c просроченным токеном.")
+        r_order = OrderMethods().create_order(payload, headers)
+
+        print("* Проверка результатов.")
+        assert r_order.status_code == 403 and r_order.json()["message"] == GET_ORDERS_JWT_EXPIRED_403, f"Ошибка получения списка заказов"
+        print(f"* Response body message: {r_order.json()['message']}")
 
         print("* Конец теста.\n")
 

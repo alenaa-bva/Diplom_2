@@ -6,15 +6,21 @@ from tests.user.login.fx_login_user import fx_login_user
 
 class TestLoginUser:
 
-    @pytest.mark.parametrize("valid_data", ["valid_user"])
-    def test_login_user_with_valid_data(self, fx_login_user, valid_data, request):
+    def test_update_user_name(self, fx_login_user):
 
-        user_data = fx_login_user[valid_data]
+        print("\n* Начало теста.")
 
+        payload = {'ingredients':
+                       []
+                   }
+
+        user_data = fx_create_order
         print(f"* Пользователь - {user_data}")
 
-        # логиним пользователя
-        r_login = UserMethods().login_user(user_data)
+        # добавляем accessToken в хедеры
+        headers = {
+            "Authorization": user_data["access_token"]
+        }
 
         print("* Проверка результатов.")
         assert r_login.status_code == 200 and r_login.json()["accessToken"] is not None, f"Ошибка авторизации пользователя"
