@@ -1,8 +1,7 @@
-
 import pytest
 from methods.user_methods import UserMethods
 from helpers import generate_new_user_data
-from tests.user.create.data import TestParametersCreator
+from tests.user.create_user.data import TestParametersCreator
 
 
 @pytest.fixture
@@ -11,6 +10,7 @@ def fx_create_user(request) -> dict:
     print("\n* Начало теста.")
     print("* Генерируем данные для регистрации пользователя.")
     user_data = generate_new_user_data()
+
     register_data = TestParametersCreator().get_test_params(user_data)
 
     # передаем набор данных по параметру в тест

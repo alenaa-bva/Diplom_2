@@ -1,6 +1,6 @@
 from config import ORDER_CREATE_400, EXPIRED_TOKEN, GET_ORDERS_JWT_EXPIRED_403
 from methods.order_methods import OrderMethods
-from tests.order.create.fx_create_order import fx_create_order
+from tests.order.create_order.fx_create_order import fx_create_order
 
 
 class TestCreateOrder:

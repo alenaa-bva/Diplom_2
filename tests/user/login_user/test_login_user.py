@@ -1,7 +1,7 @@
 import pytest
 from config import LOGIN_USER_MISSING_DATA_401
 from methods.user_methods import UserMethods
-from tests.user.login.fx_login_user import fx_login_user
+from tests.user.login_user.fx_login_user import fx_login_user
 
 
 class TestLoginUser:

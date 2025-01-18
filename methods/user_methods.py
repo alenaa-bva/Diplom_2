@@ -1,22 +1,8 @@
-# Создание пользователя:
-# создать уникального пользователя; - готов
-# создать пользователя, который уже зарегистрирован; - готов
-# создать пользователя и не заполнить одно из обязательных полей. - готов
-# Логин пользователя:
-# логин под существующим пользователем, - готов
-# логин с неверным логином и паролем.  - готов
-# Изменение данных пользователя:
-# с авторизацией,
-# без авторизации,
-# Для обеих ситуаций нужно проверить, что любое поле можно изменить.
-# Для неавторизованного пользователя — ещё и то, что система вернёт ошибку.
 import json
-
 import requests
-
 from config import BASE_URL
-
 class UserMethods:
+
 
     def register_user(self, payload: json):
 
@@ -25,6 +11,7 @@ class UserMethods:
 
 
     def login_user(self, payload: json):
+
         r_login = requests.post(f'{BASE_URL}auth/login', json=payload)
         return r_login
 
@@ -44,7 +31,15 @@ class UserMethods:
         return r_delete
 
 
-    def update_user(self):
-        r_update = requests.post(f'{BASE_URL}auth/register', json=payload)
+    def get_user_data(self, headers=None):
+
+        r_user = requests.get(f'{BASE_URL}auth/user', headers=headers)
+        return r_user
+
+
+    def update_user(self, payload: json, headers=None):
+
+        self.get_user_data(headers=headers)
+        r_update = requests.patch(f'{BASE_URL}auth/user', json=payload, headers=headers)
         return r_update
 

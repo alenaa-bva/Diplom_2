@@ -7,7 +7,7 @@ from config import BASE_URL
 
 class OrderMethods:
 
-    # создание заказа
+
     def create_order(self, payload: json, headers = None):
 
         # Создание заказа
@@ -30,7 +30,7 @@ class OrderMethods:
 
     # создание несуществующего id ингредиента
     def create_invalid_ingredient_id(self):
-        ingredients_ids = OrderMethods().get_ingredients()
+        ingredients_ids = self.get_ingredients()
 
         while True:
             invalid_id = secrets.token_hex(24)
@@ -38,14 +38,12 @@ class OrderMethods:
                 return invalid_id
 
 
-    # получение всех заказов
     def get_all_orders(self):
 
         r_orders = requests.get(f'{BASE_URL}orders/all')
         return r_orders
 
 
-    # получение всех заказов пользователя
     def get_user_orders(self, headers = None):
 
         r_orders = requests.get(f'{BASE_URL}orders', headers=headers)

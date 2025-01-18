@@ -1,14 +1,13 @@
-
 from config import GET_ORDERS_JWT_EXPIRED_403, EXPIRED_TOKEN
 from methods.order_methods import OrderMethods
-from tests.order.get.fx_get_order import fx_get_order
+from tests.order.get_user_orders.fx_get_user_orders import fx_get_user_orders
 
 
 class TestGetOrder:
 
-    def test_get_empty_list_of_user_orders(self, fx_get_order):
+    def test_get_empty_list_of_user_orders(self, fx_get_user_orders):
 
-        user_data = fx_get_order
+        user_data = fx_get_user_orders
         print(f"* Пользователь - {user_data}")
 
         # добавляем accessToken в хедеры
@@ -23,13 +22,13 @@ class TestGetOrder:
         assert r_order.status_code == 200 and r_order.json()["orders"] == [], f"Ошибка получения списка заказов"
 
 
-    def test_get_list_of_user_orders(self, fx_get_order):
+    def test_get_list_of_user_orders(self, fx_get_user_orders):
 
         payload = {'ingredients':
                        []
                    }
 
-        user_data = fx_get_order
+        user_data = fx_get_user_orders
         print(f"* Пользователь - {user_data}")
 
         # добавляем accessToken в хедеры

@@ -1,9 +1,7 @@
 import pytest
-
 from config import REGISTER_USER_EXIST_403, REGISTER_USER_MISSING_DATA_403
 from methods.user_methods import UserMethods
-from tests.user.create.fx_create_user import fx_create_user
-from tests.order.create import da
+from tests.user.create_user.fx_create_user import fx_create_user
 
 
 
@@ -24,7 +22,6 @@ class TestCreateUser:
         print("* Проверка результатов.")
         assert r_register.status_code == 200 and r_register.json()[
             "accessToken"] is not None, f"Ошибка регистрации пользователя"
-
 
 
     @pytest.mark.parametrize("valid_data", ["valid_user"])
